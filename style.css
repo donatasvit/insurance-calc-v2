@@ -1,66 +1,60 @@
 body{
     margin:0;
-    background:#0b1220;
-    color:#e2e8f0;
     font-family:Arial, sans-serif;
+    background:#0b1220;
+    color:white;
 }
 header{
-    background:#111827;
     display:flex;
     justify-content:space-between;
+    background:#111827;
     padding:12px 20px;
-    font-size:20px;
 }
 .container{
     display:flex;
-    flex-wrap:wrap;
     gap:20px;
     padding:20px;
+    flex-wrap:wrap;
 }
 .card{
     background:#1f2937;
     padding:20px;
     border-radius:12px;
-    flex:1 1 400px;
+    flex:1 1 350px;
 }
 input, select, textarea{
     width:100%;
     padding:10px;
     border-radius:8px;
+    border:1px solid #374151;
     background:#111827;
     color:white;
-    border:1px solid #374151;
     margin-bottom:10px;
+}
+textarea{
+    min-height:150px;
+    resize:vertical;
 }
 .blue-btn{
     width:100%;
     padding:12px;
     background:#0284c7;
-    color:white;
     border:none;
+    color:white;
     border-radius:8px;
-    cursor:pointer;
     margin-top:10px;
-}
-.blue-btn:hover{
-    background:#0369a1;
 }
 .row{
     display:flex;
     gap:10px;
 }
-textarea{
-    min-height:160px;
-    resize:vertical;
-}
 .ecbBox{
     background:#0f172a;
     padding:10px;
-    border-radius:8px;
     border:1px solid #1e293b;
-    margin-top:10px;
+    border-radius:8px;
+    margin:10px 0;
 }
 .checkbox-box label{
-    display:block;
-    margin:6px 0;
+    margin:5px 0;
 }
