@@ -1,30 +1,17 @@
-/* =======================================
-   SPALVŲ TEMA (LIGHT / DARK)
-======================================= */
-
 :root {
-    --bg: #eef1f5;
-    --card: #ffffff;
-    --text: #0f172a;
-    --header: #111827;
-    --header-text: #f9fafb;
-    --border: #cbd5e1;
-    --accent: #2563eb;
-}
-
-body.dark {
     --bg: #020617;
-    --card: #0f172a;
+    --bg-alt: #020617;
+    --card: #0b1220;
     --text: #e5e7eb;
-    --header: #000000;
-    --header-text: #f1f5f9;
-    --border: #475569;
-    --accent: #3b82f6;
+    --muted: #9ca3af;
+    --header: #020617;
+    --header-text: #f9fafb;
+    --border: #1f2937;
+    --accent: #38bdf8;
+    --accent-soft: rgba(56, 189, 248, 0.12);
+    --danger: #f97373;
+    --success: #22c55e;
 }
-
-/* =======================================
-   BENDRI STILIAI
-======================================= */
 
 * {
     box-sizing: border-box;
@@ -32,168 +19,171 @@ body.dark {
 
 body {
     margin: 0;
-    padding: 0;
-    font-family: "Inter", Arial, sans-serif;
-    background: var(--bg);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+    background: radial-gradient(circle at top, #0f172a 0, #020617 45%, #000 100%);
     color: var(--text);
 }
 
-/* =======================================
-   HEADER
-======================================= */
+/* HEADER */
 
 .app-header {
-    background: var(--header);
+    background: linear-gradient(135deg, #020617, #0f172a);
     color: var(--header-text);
-    padding: 12px 18px;
+    padding: 14px 18px;
     display: flex;
     align-items: center;
     gap: 12px;
+    border-bottom: 1px solid #111827;
 }
 
 .app-header h1 {
-    font-size: 18px;
     margin: 0;
+    font-size: 18px;
     font-weight: 700;
 }
 
-.dark-toggle {
-    background: #334155;
-    color: #e5e7eb;
-    padding: 6px 12px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
+.spacer {
+    flex: 1;
 }
 
-/* =======================================
-   KONTEINERIS
-======================================= */
+.dark-toggle {
+    background: #111827;
+    color: #e5e7eb;
+    border: 1px solid #1f2937;
+    border-radius: 999px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+/* KONTEINERIS */
 
 .container {
-    max-width: 1400px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 18px 16px 28px;
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
 }
 
-/* =======================================
-   KORTELĖS
-======================================= */
+/* KORTELĖS */
 
 .card {
-    background: var(--card);
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    padding: 18px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.09);
-    flex: 1 1 380px;
+    background: radial-gradient(circle at top left, rgba(56,189,248,0.12), rgba(15,23,42,0.98));
+    border-radius: 16px;
+    border: 1px solid rgba(30,64,175,0.75);
+    padding: 18px 18px 20px;
+    box-shadow: 0 18px 50px rgba(15,23,42,0.9);
+    flex: 1 1 360px;
     min-width: 340px;
 }
 
 .card h2 {
-    margin: 0 0 12px 0;
-    font-size: 20px;
-    font-weight: 700;
+    margin: 0 0 10px 0;
+    font-size: 18px;
 }
 
-.card h4 {
-    margin-top: 20px;
-    font-size: 16px;
+.card h3 {
+    margin-top: 14px;
+    margin-bottom: 4px;
+    font-size: 14px;
+    color: var(--muted);
 }
 
-/* =======================================
-   FORMOS LAUKAI
-======================================= */
+/* FORMOS ELEMENTAI */
 
 label {
     display: block;
-    margin-top: 12px;
+    margin-top: 10px;
     margin-bottom: 4px;
-    font-weight: 600;
     font-size: 13px;
+    font-weight: 600;
 }
 
 input, select, textarea {
     width: 100%;
-    padding: 10px;
+    padding: 9px 11px;
     font-size: 14px;
-    border-radius: 8px;
+    border-radius: 999px;
     border: 1px solid var(--border);
-    background: var(--card);
+    background: #020617;
     color: var(--text);
+    outline: none;
 }
 
 input.readonly {
-    background: #e2e8f0;
+    background: #020617;
+    border-style: dashed;
+    color: #e5e7eb;
 }
 
 textarea {
+    border-radius: 12px;
     min-height: 140px;
     resize: vertical;
     font-family: Consolas, monospace;
 }
 
-/* =======================================
-   MYGTUKAI
-======================================= */
+/* MYGTUKAI */
 
 button.action {
     width: 100%;
-    padding: 10px;
     margin-top: 14px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-weight: 700;
-    cursor: pointer;
-    font-size: 15px;
-}
-
-button.action:hover {
-    background: #1d4ed8;
-}
-
-button.clear-btn {
-    padding: 8px 16px;
+    padding: 10px;
     border-radius: 999px;
     border: none;
-    background: var(--accent);
-    color: white;
+    background: radial-gradient(circle at top, #38bdf8, #0ea5e9);
+    color: #020617;
+    font-weight: 700;
     cursor: pointer;
-    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
     font-size: 13px;
 }
 
-/* =======================================
-   ROW LAYOUT
-======================================= */
+button.action:hover {
+    filter: brightness(1.05);
+}
+
+.clear-row {
+    margin-top: 8px;
+    text-align: right;
+}
+
+.clear-btn {
+    padding: 7px 16px;
+    border-radius: 999px;
+    border: none;
+    background: #1d4ed8;
+    color: #f9fafb;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* GRID */
 
 .row {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 .row > div {
     flex: 1;
 }
 
-/* =======================================
-   CHECKBOX BLOKAS
-======================================= */
+/* CHECKBOX BLOKAS */
 
 .checkbox-clean {
     display: flex;
     flex-direction: column;
-    padding: 10px;
-    gap: 8px;
-    background: rgba(0, 0, 0, 0.04);
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    gap: 6px;
+    padding: 9px 11px;
+    background: rgba(15,23,42,0.9);
+    border-radius: 12px;
+    border: 1px dashed rgba(51,65,85,0.9);
 }
 
 .checkbox-clean label {
@@ -208,68 +198,116 @@ button.clear-btn {
     height: 16px;
 }
 
-/* =======================================
-   REZULTATAI
-======================================= */
+/* ECB BLOKAS */
+
+.ecb-card {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: rgba(15,23,42,0.95);
+    border: 1px solid rgba(56,189,248,0.45);
+    font-size: 12px;
+}
+
+.ecb-title {
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.ecb-line {
+    color: var(--muted);
+}
+
+/* REZULTATAI + NEON */
 
 .value {
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
 }
 
 .green {
-    color: #22c55e;
+    color: var(--success);
 }
 
 .red {
-    color: #ef4444;
+    color: var(--danger);
 }
 
-/* =======================================
-   PDF BLOKAS
-======================================= */
+/* Neon highlight tik rezultatams */
+
+.highlight {
+    animation: glow 1s ease-out;
+}
+
+.highlight-green {
+    animation: glowGreen 1s ease-out;
+}
+
+.highlight-red {
+    animation: glowRed 1s ease-out;
+}
+
+@keyframes glow {
+    0% { text-shadow: 0 0 0 rgba(56,189,248,0.8); }
+    40% { text-shadow: 0 0 16px rgba(56,189,248,1); }
+    100% { text-shadow: 0 0 0 rgba(56,189,248,0); }
+}
+
+@keyframes glowGreen {
+    0% { text-shadow: 0 0 0 rgba(34,197,94,0.8); }
+    40% { text-shadow: 0 0 16px rgba(34,197,94,1); }
+    100% { text-shadow: 0 0 0 rgba(34,197,94,0); }
+}
+
+@keyframes glowRed {
+    0% { text-shadow: 0 0 0 rgba(239,68,68,0.8); }
+    40% { text-shadow: 0 0 16px rgba(239,68,68,1); }
+    100% { text-shadow: 0 0 0 rgba(239,68,68,0); }
+}
+
+/* PDF BLOKAS */
 
 .pdf-controls {
-    margin-top: 14px;
+    margin-top: 12px;
     display: flex;
-    align-items: center;
     gap: 10px;
+    align-items: center;
     font-size: 12px;
 }
 
 .pdf-btn {
     padding: 6px 12px;
+    border-radius: 999px;
     border: none;
-    background: var(--accent);
-    border-radius: 8px;
-    color: white;
+    background: #0ea5e9;
+    color: #020617;
     cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
 }
 
-/* =======================================
-   PRINT RULES
-======================================= */
+/* PRINT */
 
 @media print {
     body {
         background: #ffffff;
         color: #000000;
     }
-    header, .dark-toggle {
+    .app-header, .dark-toggle {
         display: none !important;
     }
     .card {
         box-shadow: none;
         border: 1px solid #d1d5db;
+        background: #ffffff;
     }
 }
 
-/* =======================================
-   PARAŠAS
-======================================= */
+/* RESPONSYVUMAS */
 
-.signature {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 12px;
-    color: #888;
+@media (max-width: 900px) {
+    .container {
+        flex-direction: column;
+    }
 }
