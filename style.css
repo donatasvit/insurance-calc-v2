@@ -1,0 +1,275 @@
+/* =======================================
+   SPALVŲ TEMA (LIGHT / DARK)
+======================================= */
+
+:root {
+    --bg: #eef1f5;
+    --card: #ffffff;
+    --text: #0f172a;
+    --header: #111827;
+    --header-text: #f9fafb;
+    --border: #cbd5e1;
+    --accent: #2563eb;
+}
+
+body.dark {
+    --bg: #020617;
+    --card: #0f172a;
+    --text: #e5e7eb;
+    --header: #000000;
+    --header-text: #f1f5f9;
+    --border: #475569;
+    --accent: #3b82f6;
+}
+
+/* =======================================
+   BENDRI STILIAI
+======================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* =======================================
+   HEADER
+======================================= */
+
+.app-header {
+    background: var(--header);
+    color: var(--header-text);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.app-header h1 {
+    font-size: 18px;
+    margin: 0;
+    font-weight: 700;
+}
+
+.dark-toggle {
+    background: #334155;
+    color: #e5e7eb;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+/* =======================================
+   KONTEINERIS
+======================================= */
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+/* =======================================
+   KORTELĖS
+======================================= */
+
+.card {
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.09);
+    flex: 1 1 380px;
+    min-width: 340px;
+}
+
+.card h2 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.card h4 {
+    margin-top: 20px;
+    font-size: 16px;
+}
+
+/* =======================================
+   FORMOS LAUKAI
+======================================= */
+
+label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--text);
+}
+
+input.readonly {
+    background: #e2e8f0;
+}
+
+textarea {
+    min-height: 140px;
+    resize: vertical;
+    font-family: Consolas, monospace;
+}
+
+/* =======================================
+   MYGTUKAI
+======================================= */
+
+button.action {
+    width: 100%;
+    padding: 10px;
+    margin-top: 14px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+button.action:hover {
+    background: #1d4ed8;
+}
+
+button.clear-btn {
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+}
+
+/* =======================================
+   ROW LAYOUT
+======================================= */
+
+.row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.row > div {
+    flex: 1;
+}
+
+/* =======================================
+   CHECKBOX BLOKAS
+======================================= */
+
+.checkbox-clean {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.04);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+}
+
+.checkbox-clean label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+}
+
+.checkbox-clean input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+/* =======================================
+   REZULTATAI
+======================================= */
+
+.value {
+    font-weight: 700;
+}
+
+.green {
+    color: #22c55e;
+}
+
+.red {
+    color: #ef4444;
+}
+
+/* =======================================
+   PDF BLOKAS
+======================================= */
+
+.pdf-controls {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+}
+
+.pdf-btn {
+    padding: 6px 12px;
+    border: none;
+    background: var(--accent);
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+/* =======================================
+   PRINT RULES
+======================================= */
+
+@media print {
+    body {
+        background: #ffffff;
+        color: #000000;
+    }
+    header, .dark-toggle {
+        display: none !important;
+    }
+    .card {
+        box-shadow: none;
+        border: 1px solid #d1d5db;
+    }
+}
+
+/* =======================================
+   PARAŠAS
+======================================= */
+
+.signature {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #888;
+}
