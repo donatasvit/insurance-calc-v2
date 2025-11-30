@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Insurance Calculator — SUPER</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <title>Insurance Calculator (SUPER)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header class="app-header">
+<header>
     <h1>Insurance Calculator (SUPER)</h1>
-    <div class="spacer"></div>
-    <button class="dark-toggle" onclick="toggleDark()">🌙 / ☀️</button>
+    <div class="modes">
+        <button id="darkToggle">🌙 / ☀️</button>
+    </div>
 </header>
 
 <div class="container">
 
-    <!-- 1️⃣ SKAIČIUOKLĖ -->
-    <div class="card" id="calcCard">
+    <!-- SKAIČIUOKLĖ (KAIRĖ) -->
+    <div class="card calc">
         <h2>Skaičiuoklė</h2>
 
         <label>Invoice valiuta</label>
@@ -36,81 +37,69 @@
         </select>
 
         <label>Invoice suma (ta valiuta)</label>
-        <input type="number" id="invoiceAmount" placeholder="pvz. 625000">
+        <input id="invoiceAmount" type="number" placeholder="pvz.: 625000">
 
         <label>Invoice suma EUR (automatiškai per ECB)</label>
-        <input type="number" id="invoiceEUR" readonly class="readonly">
+        <input id="invoiceEUR" type="number" readonly class="readonly">
 
-        <!-- ECB info blokas -->
-        <div id="ecbInfo" class="ecb-card">
-            <div class="ecb-title">ECB kursas</div>
-            <div class="ecb-line" id="ecbToday">Šiandienos kursas: –</div>
-            <div class="ecb-line" id="ecbYesterday">Vakar: –</div>
-            <div class="ecb-line" id="ecbChange">Pokytis: –</div>
+        <!-- ECB BLOKAS -->
+        <div class="ecbBox">
+            <strong>ECB kursas</strong><br>
+            Šiandienos kursas: <span id="ecbToday">–</span><br>
+            Vakar: <span id="ecbYesterday">–</span><br>
+            Pokytis: <span id="ecbChange">–</span>
         </div>
 
-        <div class="clear-row">
-            <button type="button" class="clear-btn" onclick="resetAll()">Naujas skaičiavimas</button>
-        </div>
+        <button id="resetBtn" class="smallBtn">Naujas skaičiavimas</button>
 
-        <div class="row">
-            <div>
-                <label>Brokerio %</label>
-                <select id="brokerPercent">
-                    <option value="0.07">0,07 %</option>
-                    <option value="0.08">0,08 %</option>
-                    <option value="0.10">0,10 %</option>
-                    <option value="0.12">0,12 %</option>
-                    <option value="custom">Kitas</option>
-                </select>
-            </div>
-            <div>
-                <label>Brokerio % (jei Kitas)</label>
-                <input type="text" id="brokerCustom" placeholder="pvz. 0,09" disabled>
-            </div>
-        </div>
+        <label>Brokerio %</label>
+        <select id="brokerPercent">
+            <option value="0.07">0,07 %</option>
+            <option value="0.08">0,08 %</option>
+            <option value="0.10">0,10 %</option>
+            <option value="custom">Kitas</option>
+        </select>
 
-        <div class="row">
-            <div>
-                <label>Tavo % klientui</label>
-                <select id="myPercent">
-                    <option value="0.23">0,23 %</option>
-                    <option value="0.24" selected>0,24 %</option>
-                    <option value="0.25">0,25 %</option>
-                    <option value="custom">Kitas</option>
-                </select>
-            </div>
-            <div>
-                <label>Tavo % (jei Kitas)</label>
-                <input type="text" id="myCustom" placeholder="pvz. 0,27" disabled>
-            </div>
-        </div>
+        <label>Brokerio % (jei Kitas)</label>
+        <input id="brokerCustom" placeholder="pvz.: 0,09" disabled>
 
-        <button class="action" onclick="calc()">Skaičiuoti</button>
+        <label>Tavo % klientui</label>
+        <select id="myPercent">
+            <option value="0.23">0,23 %</option>
+            <option value="0.24" selected>0,24 %</option>
+            <option value="0.25">0,25 %</option>
+            <option value="custom">Kitas</option>
+        </select>
+
+        <label>Tavo % (jei Kitas)</label>
+        <input id="myCustom" placeholder="pvz.: 0,27" disabled>
+
+        <button id="calcBtn" class="action">Skaičiuoti</button>
+
     </div>
 
-    <!-- 2️⃣ REZULTATAI -->
-    <div class="card" id="resultsCard">
+    <!-- REZULTATAI (VIDURYS) -->
+    <div class="card results">
         <h2>Rezultatai</h2>
 
-        <p>Invoice EUR: <span id="resInvoiceEUR" class="value">–</span></p>
-        <p>Savikaina (brokeris): <span id="resCost" class="value">–</span></p>
-        <p>Kaina klientui: <span id="resClient" class="value">–</span></p>
-        <p>Pelnas: <span id="resProfit" class="value">–</span></p>
+        <p>Invoice EUR: <span id="rInvoice" class="val">–</span></p>
+        <p>Savikaina (brokeris): <span id="rCost" class="val">–</span></p>
+        <p>Kaina klientui: <span id="rClient" class="val">–</span></p>
+        <p>Pelnas: <span id="rProfit" class="val">–</span></p>
 
         <h3>Pelno analizė</h3>
-        <p>Pelnas %: <span id="resProfitPercent" class="value">–</span></p>
-        <p>Tavo % – brokerio %: <span id="resMarginDiff" class="value">–</span></p>
-        <p>Tavo kaina vs AON: <span id="resVsAON" class="value">–</span></p>
-        <p>Tavo kaina vs Legator: <span id="resVsLeg" class="value">–</span></p>
+        <p>Pelnas %: <span id="rProfitP">–</span></p>
+        <p>Tavo % – brokerio %: <span id="rDiff">–</span></p>
+        <p>Tavo kaina vs AON: <span id="rAON">–</span></p>
+        <p>Tavo kaina vs Legator: <span id="rLeg">–</span></p>
 
         <h3>AON vs Legator</h3>
-        <p>AON 0,07 %: <span id="resAON" class="value">–</span></p>
-        <p>Legator 0,10 %: <span id="resLeg" class="value">–</span></p>
+        <p>AON 0,07 %: <span id="rAON2">–</span></p>
+        <p>Legator 0,10 %: <span id="rLeg2">–</span></p>
     </div>
 
-    <!-- 3️⃣ TEKSTAS KLIENTUI -->
-    <div class="card" id="clientCard">
+    <!-- TEKSTAS KLIENTUI (DEŠINĖ) -->
+    <div class="card client">
         <h2>Tekstas klientui</h2>
 
         <label>Kalba</label>
@@ -121,7 +110,7 @@
         </select>
 
         <label>Ką rodyti</label>
-        <div class="checkbox-clean">
+        <div class="checks">
             <label><input type="checkbox" id="showEUR" checked> Rodyti kainą EUR</label>
             <label><input type="checkbox" id="showExtra" checked> Rodyti papildomą valiutą</label>
             <label><input type="checkbox" id="showDate" checked> Rodyti datą</label>
@@ -130,31 +119,22 @@
 
         <label>Papildoma valiuta</label>
         <select id="extraCurrency">
-            <option value="USD">USD</option>
-            <option value="GBP">GBP</option>
-            <option value="PLN">PLN</option>
-            <option value="CHF">CHF</option>
-            <option value="CNY">CNY</option>
-            <option value="CAD">CAD</option>
-            <option value="AUD">AUD</option>
+            <option>USD</option>
+            <option>GBP</option>
+            <option>PLN</option>
+            <option>CHF</option>
+            <option>CNY</option>
+            <option>CAD</option>
+            <option>AUD</option>
         </select>
 
-        <button class="action" onclick="generateClientText()">Generuoti tekstą klientui</button>
+        <button id="genBtn" class="action">Generuoti tekstą klientui</button>
 
-        <label>Tekstas klientui</label>
+        <label>Tekstas klientui:</label>
         <textarea id="clientText"></textarea>
 
-        <button class="action" onclick="copyClientText()">Kopijuoti tekstą</button>
+        <button id="copyBtn" class="action">Kopijuoti tekstą</button>
 
-        <div class="pdf-controls">
-            <span>PDF turinys:</span>
-            <select id="pdfMode">
-                <option value="both">Skaičiuoklė + tekstas</option>
-                <option value="calc">Tik skaičiuoklė</option>
-                <option value="client">Tik tekstas klientui</option>
-            </select>
-            <button class="pdf-btn" onclick="generatePDF()">PDF (Print)</button>
-        </div>
     </div>
 
 </div>
