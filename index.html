@@ -1,58 +1,57 @@
 <!DOCTYPE html>
 <html lang="lt">
 <head>
-<meta charset="UTF-8">
-<title>Insurance Calculator (SUPER)</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>Insurance Calculator – SUPER</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<header>
-    <h1>Insurance Calculator (SUPER)</h1>
-    <button id="darkToggle">🌙 / ☀️</button>
+<header class="top-bar">
+    <h1>Draudimo skaičiuoklė – SUPER versija</h1>
+    <button id="darkToggle" class="icon-btn">🌙 / ☀️</button>
 </header>
 
-<div class="container">
+<main class="layout">
 
-    <!-- ==================== SKAIČIUOKLĖ ==================== -->
-    <div class="card">
+    <!-- ===================== 1. SKAIČIUOKLĖ ===================== -->
+    <section class="card">
         <h2>Skaičiuoklė</h2>
 
         <label>Invoice valiuta</label>
         <select id="invoiceCurrency">
-            <option>USD</option>
-            <option>EUR</option>
-            <option>GBP</option>
-            <option>CHF</option>
-            <option>PLN</option>
-            <option>CNY</option>
-            <option>JPY</option>
-            <option>CAD</option>
-            <option>AUD</option>
-            <option>NOK</option>
-            <option>SEK</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="CHF">CHF</option>
+            <option value="PLN">PLN</option>
+            <option value="CNY">CNY</option>
+            <option value="JPY">JPY</option>
+            <option value="CAD">CAD</option>
+            <option value="AUD">AUD</option>
+            <option value="NOK">NOK</option>
+            <option value="SEK">SEK</option>
         </select>
 
-        <label>Invoice suma</label>
-        <input type="number" id="invoiceAmount" placeholder="pvz. 100000">
+        <label>Invoice suma (ta valiuta)</label>
+        <input type="number" id="invoiceAmount" placeholder="pvz. 625000">
 
-        <label>Invoice suma EUR (ECB)</label>
-        <input type="number" id="invoiceEUR" readonly class="readonly">
+        <label>Invoice suma EUR (automatiškai per ECB)</label>
+        <input type="number" id="invoiceEUR" class="readonly" readonly>
 
-        <!-- ======== ECB Blokas ======== -->
-        <div class="ecbBox">
-            <strong>ECB kursas</strong><br>
-            <span id="ecbToday">Šiandienos: –</span><br>
-            <span id="ecbYesterday">Vakar: –</span><br>
-            <span id="ecbChange">Pokytis: –</span>
+        <!-- ==== ECB blokas ==== -->
+        <div class="ecb-box">
+            <h3>ECB kursas</h3>
+            <p id="ecbToday">Šiandienos kursas: –</p>
+            <p id="ecbYesterday">Vakar: –</p>
+            <p id="ecbChange">Pokytis: –</p>
         </div>
 
-        <button id="resetBtn" class="blue-btn">Naujas skaičiavimas</button>
+        <button id="resetBtn" class="primary full">Naujas skaičiavimas</button>
 
         <div class="row">
-            <div>
+            <div class="col">
                 <label>Brokerio %</label>
                 <select id="brokerPercent">
                     <option value="0.07">0,07 %</option>
@@ -61,14 +60,14 @@
                     <option value="custom">Kitas</option>
                 </select>
             </div>
-            <div>
+            <div class="col">
                 <label>Brokerio % (jei Kitas)</label>
                 <input type="text" id="brokerCustom" placeholder="pvz. 0,09" disabled>
             </div>
         </div>
 
         <div class="row">
-            <div>
+            <div class="col">
                 <label>Tavo % klientui</label>
                 <select id="myPercent">
                     <option value="0.23">0,23 %</option>
@@ -77,32 +76,31 @@
                     <option value="custom">Kitas</option>
                 </select>
             </div>
-            <div>
+            <div class="col">
                 <label>Tavo % (jei Kitas)</label>
                 <input type="text" id="myCustom" placeholder="pvz. 0,27" disabled>
             </div>
         </div>
 
-        <button id="calcBtn" class="blue-btn">Skaičiuoti</button>
+        <button id="calcBtn" class="primary full">Skaičiuoti</button>
+    </section>
 
-    </div>
-
-    <!-- ==================== REZULTATAI ==================== -->
-    <div class="card">
+    <!-- ===================== 2. REZULTATAI ===================== -->
+    <section class="card">
         <h2>Rezultatai</h2>
 
-        <p>Invoice EUR: <span id="resInvoiceEUR">–</span></p>
-        <p>Savikaina (brokeris): <span id="resCost">–</span></p>
-        <p>Kaina klientui: <span id="resClient">–</span></p>
-        <p>Pelnas: <span id="resProfit">–</span></p>
+        <p>Invoice EUR: <span id="resInvoiceEUR" class="value">–</span></p>
+        <p>Savikaina (brokeris): <span id="resCost" class="value">–</span></p>
+        <p>Kaina klientui: <span id="resClient" class="value">–</span></p>
+        <p>Pelnas: <span id="resProfit" class="value">–</span></p>
 
         <h3>AON vs Legator</h3>
-        <p>AON 0,07 %: <span id="resAON">–</span></p>
-        <p>Legator 0,10 %: <span id="resLeg">–</span></p>
-    </div>
+        <p>AON 0,07 %: <span id="resAON" class="value">–</span></p>
+        <p>Legator 0,10 %: <span id="resLeg" class="value">–</span></p>
+    </section>
 
-    <!-- ==================== TEKSTAS KLIENTUI ==================== -->
-    <div class="card">
+    <!-- ===================== 3. TEKSTAS KLIENTUI ===================== -->
+    <section class="card">
         <h2>Tekstas klientui</h2>
 
         <label>Kalba</label>
@@ -113,36 +111,37 @@
         </select>
 
         <label>Ką rodyti</label>
-        <div class="checkbox-box">
+        <div class="checks">
             <label><input type="checkbox" id="showEUR" checked> Rodyti kainą EUR</label>
             <label><input type="checkbox" id="showExtra" checked> Rodyti papildomą valiutą</label>
             <label><input type="checkbox" id="showDate" checked> Rodyti datą</label>
-            <label><input type="checkbox" id="showInvoice" checked> Rodyti invoice</label>
+            <label><input type="checkbox" id="showInvoice" checked> Rodyti invoice eilutę</label>
         </div>
 
         <label>Papildoma valiuta</label>
         <select id="extraCurrency">
-            <option>USD</option>
-            <option>EUR</option>
-            <option>GBP</option>
-            <option>CHF</option>
-            <option>PLN</option>
-            <option>CNY</option>
-            <option>JPY</option>
-            <option>CAD</option>
-            <option>AUD</option>
-            <option>NOK</option>
-            <option>SEK</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+            <option value="GBP">GBP</option>
+            <option value="CHF">CHF</option>
+            <option value="PLN">PLN</option>
+            <option value="CNY">CNY</option>
+            <option value="JPY">JPY</option>
+            <option value="CAD">CAD</option>
+            <option value="AUD">AUD</option>
+            <option value="NOK">NOK</option>
+            <option value="SEK">SEK</option>
         </select>
 
-        <button id="genBtn" class="blue-btn">Generuoti tekstą</button>
+        <button id="genBtn" class="primary full">Generuoti tekstą klientui</button>
 
+        <label>Tekstas klientui</label>
         <textarea id="clientText"></textarea>
 
-        <button id="copyBtn" class="blue-btn">Kopijuoti</button>
-    </div>
+        <button id="copyBtn" class="primary full">Kopijuoti tekstą</button>
+    </section>
 
-</div>
+</main>
 
 <script src="script.js"></script>
 </body>
