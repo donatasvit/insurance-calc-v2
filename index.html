@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Insurance Calculator — SUPER Version</title>
-
-    <!-- CSS failas -->
+    <title>Insurance Calculator — SUPER</title>
     <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -19,9 +17,7 @@
 
 <div class="container">
 
-    <!-- ====================================== -->
-    <!-- 1️⃣   SKAIČIUOKLĖ                       -->
-    <!-- ====================================== -->
+    <!-- 1️⃣ SKAIČIUOKLĖ -->
     <div class="card" id="calcCard">
         <h2>Skaičiuoklė</h2>
 
@@ -44,6 +40,14 @@
 
         <label>Invoice suma EUR (automatiškai per ECB)</label>
         <input type="number" id="invoiceEUR" readonly class="readonly">
+
+        <!-- ECB info blokas -->
+        <div id="ecbInfo" class="ecb-card">
+            <div class="ecb-title">ECB kursas</div>
+            <div class="ecb-line" id="ecbToday">Šiandienos kursas: –</div>
+            <div class="ecb-line" id="ecbYesterday">Vakar: –</div>
+            <div class="ecb-line" id="ecbChange">Pokytis: –</div>
+        </div>
 
         <div class="clear-row">
             <button type="button" class="clear-btn" onclick="resetAll()">Naujas skaičiavimas</button>
@@ -85,9 +89,7 @@
         <button class="action" onclick="calc()">Skaičiuoti</button>
     </div>
 
-    <!-- ====================================== -->
-    <!-- 2️⃣   REZULTATAI                        -->
-    <!-- ====================================== -->
+    <!-- 2️⃣ REZULTATAI -->
     <div class="card" id="resultsCard">
         <h2>Rezultatai</h2>
 
@@ -96,14 +98,18 @@
         <p>Kaina klientui: <span id="resClient" class="value">–</span></p>
         <p>Pelnas: <span id="resProfit" class="value">–</span></p>
 
-        <h4>AON vs Legator</h4>
+        <h3>Pelno analizė</h3>
+        <p>Pelnas %: <span id="resProfitPercent" class="value">–</span></p>
+        <p>Tavo % – brokerio %: <span id="resMarginDiff" class="value">–</span></p>
+        <p>Tavo kaina vs AON: <span id="resVsAON" class="value">–</span></p>
+        <p>Tavo kaina vs Legator: <span id="resVsLeg" class="value">–</span></p>
+
+        <h3>AON vs Legator</h3>
         <p>AON 0,07 %: <span id="resAON" class="value">–</span></p>
         <p>Legator 0,10 %: <span id="resLeg" class="value">–</span></p>
     </div>
 
-    <!-- ====================================== -->
-    <!-- 3️⃣   TEKSTAS KLIENTUI                 -->
-    <!-- ====================================== -->
+    <!-- 3️⃣ TEKSTAS KLIENTUI -->
     <div class="card" id="clientCard">
         <h2>Tekstas klientui</h2>
 
@@ -153,8 +159,6 @@
 
 </div>
 
-<!-- JS failas -->
 <script src="script.js"></script>
-
 </body>
 </html>
