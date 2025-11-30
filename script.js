@@ -1,422 +1,211 @@
-// DARK MODE
-function toggleDark() {
+// === DARK MODE ==========================================
+const darkToggle = document.getElementById("darkToggle");
+darkToggle.onclick = () => {
     document.body.classList.toggle("dark");
-    localStorage.setItem("dark", document.body.classList.contains("dark"));
-}
-if (localStorage.getItem("dark") === "true") {
+    localStorage.setItem("darkmode", document.body.classList.contains("dark"));
+};
+if (localStorage.getItem("darkmode") === "true") {
     document.body.classList.add("dark");
 }
 
-let lastClientEUR = null;
+// === ELEMENTAI ===========================================
+const invoiceCur = document.getElementById("invoiceCurrency");
+const invoiceAmt = document.getElementById("invoiceAmount");
+const invoiceEUR = document.getElementById("invoiceEUR");
 
-// Pagalbinė: saugo ir atkuria būseną
-function saveState() {
-    const state = {
-        invoiceCurrency: document.getElementById("invoiceCurrency").value,
-        invoiceAmount: document.getElementById("invoiceAmount").value,
-        invoiceEUR: document.getElementById("invoiceEUR").value,
-        brokerPercent: document.getElementById("brokerPercent").value,
-        brokerCustom: document.getElementById("brokerCustom").value,
-        myPercent: document.getElementById("myPercent").value,
-        myCustom: document.getElementById("myCustom").value,
-        resInvoiceEUR: document.getElementById("resInvoiceEUR").textContent,
-        resCost: document.getElementById("resCost").textContent,
-        resClient: document.getElementById("resClient").textContent,
-        resProfit: document.getElementById("resProfit").textContent,
-        resProfitPercent: document.getElementById("resProfitPercent").textContent,
-        resMarginDiff: document.getElementById("resMarginDiff").textContent,
-        resVsAON: document.getElementById("resVsAON").textContent,
-        resVsLeg: document.getElementById("resVsLeg").textContent,
-        resAON: document.getElementById("resAON").textContent,
-        resLeg: document.getElementById("resLeg").textContent,
-        lang: document.getElementById("lang").value,
-        showEUR: document.getElementById("showEUR").checked,
-        showExtra: document.getElementById("showExtra").checked,
-        showDate: document.getElementById("showDate").checked,
-        showInvoice: document.getElementById("showInvoice").checked,
-        extraCurrency: document.getElementById("extraCurrency").value,
-        clientText: document.getElementById("clientText").value,
-        pdfMode: document.getElementById("pdfMode").value,
-        lastClientEUR: lastClientEUR,
-        ecbToday: document.getElementById("ecbToday").textContent,
-        ecbYesterday: document.getElementById("ecbYesterday").textContent,
-        ecbChange: document.getElementById("ecbChange").textContent,
-    };
-    localStorage.setItem("insuranceCalcState", JSON.stringify(state));
-}
+const brokerSel = document.getElementById("brokerPercent");
+const brokerCustom = document.getElementById("brokerCustom");
 
-function restoreState() {
-    const raw = localStorage.getItem("insuranceCalcState");
-    if (!raw) return;
+const mySel = document.getElementById("myPercent");
+const myCustom = document.getElementById("myCustom");
+
+const rInvoice = document.getElementById("rInvoice");
+const rCost = document.getElementById("rCost");
+const rClient = document.getElementById("rClient");
+const rProfit = document.getElementById("rProfit");
+const rProfitP = document.getElementById("rProfitP");
+const rDiff = document.getElementById("rDiff");
+const rAON = document.getElementById("rAON");
+const rLeg = document.getElementById("rLeg");
+const rAON2 = document.getElementById("rAON2");
+const rLeg2 = document.getElementById("rLeg2");
+
+// ECB blokas
+const ecbToday = document.getElementById("ecbToday");
+const ecbYesterday = document.getElementById("ecbYesterday");
+const ecbChange = document.getElementById("ecbChange");
+
+// === GAUTI ECB KURSUS ===================================
+async function loadECB() {
     try {
-        const s = JSON.parse(raw);
-        document.getElementById("invoiceCurrency").value = s.invoiceCurrency ?? "USD";
-        document.getElementById("invoiceAmount").value = s.invoiceAmount ?? "";
-        document.getElementById("invoiceEUR").value = s.invoiceEUR ?? "";
-
-        document.getElementById("brokerPercent").value = s.brokerPercent ?? "0.07";
-        document.getElementById("brokerCustom").value = s.brokerCustom ?? "";
-        document.getElementById("myPercent").value = s.myPercent ?? "0.24";
-        document.getElementById("myCustom").value = s.myCustom ?? "";
-
-        document.getElementById("brokerCustom").disabled = (document.getElementById("brokerPercent").value !== "custom");
-        document.getElementById("myCustom").disabled = (document.getElementById("myPercent").value !== "custom");
-
-        document.getElementById("resInvoiceEUR").textContent = s.resInvoiceEUR ?? "–";
-        document.getElementById("resCost").textContent = s.resCost ?? "–";
-        document.getElementById("resClient").textContent = s.resClient ?? "–";
-        document.getElementById("resProfit").textContent = s.resProfit ?? "–";
-        document.getElementById("resProfitPercent").textContent = s.resProfitPercent ?? "–";
-        document.getElementById("resMarginDiff").textContent = s.resMarginDiff ?? "–";
-        document.getElementById("resVsAON").textContent = s.resVsAON ?? "–";
-        document.getElementById("resVsLeg").textContent = s.resVsLeg ?? "–";
-        document.getElementById("resAON").textContent = s.resAON ?? "–";
-        document.getElementById("resLeg").textContent = s.resLeg ?? "–";
-
-        document.getElementById("lang").value = s.lang ?? "LT";
-        document.getElementById("showEUR").checked = s.showEUR ?? true;
-        document.getElementById("showExtra").checked = s.showExtra ?? true;
-        document.getElementById("showDate").checked = s.showDate ?? true;
-        document.getElementById("showInvoice").checked = s.showInvoice ?? true;
-        document.getElementById("extraCurrency").value = s.extraCurrency ?? "USD";
-        document.getElementById("clientText").value = s.clientText ?? "";
-        document.getElementById("pdfMode").value = s.pdfMode ?? "both";
-
-        lastClientEUR = s.lastClientEUR ?? null;
-
-        if (s.ecbToday) document.getElementById("ecbToday").textContent = s.ecbToday;
-        if (s.ecbYesterday) document.getElementById("ecbYesterday").textContent = s.ecbYesterday;
-        if (s.ecbChange) document.getElementById("ecbChange").textContent = s.ecbChange;
-    } catch (e) {
-        console.error("Nepavyko atkurti būsenos", e);
-    }
-}
-
-// ECB istorija: šiandien + vakar
-async function updateECBInfo() {
-    const cur = document.getElementById("invoiceCurrency").value;
-    const todayEl = document.getElementById("ecbToday");
-    const yesterdayEl = document.getElementById("ecbYesterday");
-    const changeEl = document.getElementById("ecbChange");
-
-    if (!cur || cur === "EUR") {
-        todayEl.textContent = "Šiandienos kursas: 1 EUR = 1.0000 EUR";
-        yesterdayEl.textContent = "Vakar: –";
-        changeEl.textContent = "Pokytis: –";
-        saveState();
-        return;
-    }
-
-    const today = new Date();
-    const y = new Date(today);
-    y.setDate(today.getDate() - 1);
-
-    const pad = (n) => (n < 10 ? "0" + n : "" + n);
-    const todayStr = today.getFullYear() + "-" + pad(today.getMonth() + 1) + "-" + pad(today.getDate());
-    const yStr = y.getFullYear() + "-" + pad(y.getMonth() + 1) + "-" + pad(y.getDate());
-
-    try {
-        const [rToday, rY] = await Promise.all([
-            fetch(`https://api.frankfurter.app/latest?from=${cur}&to=EUR`),
-            fetch(`https://api.frankfurter.app/${yStr}?from=${cur}&to=EUR`)
-        ]);
-
-        const dToday = await rToday.json();
-        const dY = await rY.json();
-
-        const rateToday = dToday && dToday.rates && dToday.rates.EUR ? dToday.rates.EUR : null;
-        const rateY = dY && dY.rates && dY.rates.EUR ? dY.rates.EUR : null;
-
-        if (rateToday) {
-            todayEl.textContent = `Šiandienos kursas: 1 ${cur} = ${rateToday.toFixed(4)} EUR`;
-        } else {
-            todayEl.textContent = "Šiandienos kursas: –";
+        let cur = invoiceCur.value;
+        if (cur === "EUR") {
+            ecbToday.textContent = "1.00";
+            ecbYesterday.textContent = "1.00";
+            ecbChange.textContent = "0%";
+            return;
         }
 
-        if (rateY) {
-            yesterdayEl.textContent = `Vakar: 1 ${cur} = ${rateY.toFixed(4)} EUR`;
-            if (rateToday) {
-                const diff = (rateToday - rateY) / rateY * 100;
-                const rounded = diff.toFixed(2);
-                const sign = diff > 0 ? "+" : "";
-                changeEl.textContent = `Pokytis: ${sign}${rounded}%`;
-            } else {
-                changeEl.textContent = "Pokytis: –";
-            }
-        } else {
-            yesterdayEl.textContent = "Vakar: –";
-            changeEl.textContent = "Pokytis: –";
-        }
+        const today = await fetch(`https://api.frankfurter.app/latest?from=${cur}&to=EUR`);
+        const tData = await today.json();
+        const tRate = tData.rates.EUR;
+
+        const y = new Date(Date.now() - 86400000).toISOString().split("T")[0];
+        const yesterday = await fetch(`https://api.frankfurter.app/${y}?from=${cur}&to=EUR`);
+        const yData = await yesterday.json();
+        const yRate = yData.rates ? yData.rates.EUR : tRate;
+
+        ecbToday.textContent = tRate.toFixed(4);
+        ecbYesterday.textContent = yRate.toFixed(4);
+
+        const change = ((tRate - yRate) / yRate) * 100;
+        ecbChange.textContent = change.toFixed(2) + "%";
+
     } catch (e) {
-        todayEl.textContent = "Šiandienos kursas: –";
-        yesterdayEl.textContent = "Vakar: –";
-        changeEl.textContent = "Pokytis: –";
+        ecbToday.textContent = "–";
+        ecbYesterday.textContent = "–";
+        ecbChange.textContent = "–";
     }
-    saveState();
 }
 
-// Auto konvertavimas į EUR
-async function autoConvert() {
-    const cur = document.getElementById("invoiceCurrency").value;
-    const amt = parseFloat(document.getElementById("invoiceAmount").value);
-    const out = document.getElementById("invoiceEUR");
-
+// === AUTO KONVERSIJA ======================================
+async function convertToEUR() {
+    let amt = parseFloat(invoiceAmt.value);
     if (!amt) {
-        out.value = "";
-        await updateECBInfo();
-        saveState();
+        invoiceEUR.value = "";
         return;
     }
+    let cur = invoiceCur.value;
 
     if (cur === "EUR") {
-        out.value = amt.toFixed(2);
-        await updateECBInfo();
-        saveState();
+        invoiceEUR.value = amt.toFixed(2);
         return;
     }
 
     try {
         const r = await fetch(`https://api.frankfurter.app/latest?from=${cur}&to=EUR`);
-        const data = await r.json();
-        if (data && data.rates && data.rates.EUR) {
-            out.value = (amt * data.rates.EUR).toFixed(4);
-        } else {
-            out.value = "";
-        }
-    } catch {
-        out.value = "";
+        const d = await r.json();
+        const rate = d.rates.EUR;
+
+        invoiceEUR.value = (amt * rate).toFixed(4);
+        loadECB();
+    } catch (e) {
+        invoiceEUR.value = "";
     }
-    await updateECBInfo();
-    saveState();
 }
 
-// Listeners valiutai ir sumai
-document.getElementById("invoiceCurrency").addEventListener("change", autoConvert);
-document.getElementById("invoiceAmount").addEventListener("input", autoConvert);
+invoiceAmt.oninput = convertToEUR;
+invoiceCur.onchange = convertToEUR;
 
-// Custom procentai
-document.getElementById("brokerPercent").addEventListener("change", function () {
-    const c = document.getElementById("brokerCustom");
-    c.disabled = (this.value !== "custom");
-    if (c.disabled) c.value = "";
-    saveState();
-});
-document.getElementById("myPercent").addEventListener("change", function () {
-    const c = document.getElementById("myCustom");
-    c.disabled = (this.value !== "custom");
-    if (c.disabled) c.value = "";
-    saveState();
-});
+// === PROCENTŲ AKTYVATORIAI ================================
+brokerSel.onchange = () => {
+    brokerCustom.disabled = brokerSel.value !== "custom";
+    if (brokerCustom.disabled) brokerCustom.value = "";
+};
+mySel.onchange = () => {
+    myCustom.disabled = mySel.value !== "custom";
+    if (myCustom.disabled) myCustom.value = "";
+};
 
-// Skaičiavimai
-function calc() {
-    const eur = parseFloat(document.getElementById("invoiceEUR").value);
+// === SKAIČIAVIMAS =========================================
+document.getElementById("calcBtn").onclick = () => {
+    let eur = parseFloat(invoiceEUR.value);
     if (!eur) {
-        alert("Blogi duomenys");
+        alert("Neteisingi duomenys.");
         return;
     }
 
-    let b = document.getElementById("brokerPercent").value;
-    if (b === "custom") {
-        b = document.getElementById("brokerCustom").value.replace(",", ".");
-        b = parseFloat(b) / 100;
-    } else {
-        b = parseFloat(b) / 100;
-    }
+    // brokerio %
+    let b = brokerSel.value === "custom"
+        ? parseFloat(brokerCustom.value.replace(",", ".")) / 100
+        : parseFloat(brokerSel.value) / 100;
 
-    let m = document.getElementById("myPercent").value;
-    if (m === "custom") {
-        m = document.getElementById("myCustom").value.replace(",", ".");
-        m = parseFloat(m) / 100;
-    } else {
-        m = parseFloat(m) / 100;
-    }
+    // tavo %
+    let m = mySel.value === "custom"
+        ? parseFloat(myCustom.value.replace(",", ".")) / 100
+        : parseFloat(mySel.value) / 100;
 
     if (isNaN(b) || isNaN(m)) {
-        alert("Įvesk procentą teisingu formatu: pvz. 0.30 arba 0,30");
+        alert("Procentai įvesti blogu formatu.");
         return;
     }
 
     const cost = eur * b;
     const client = eur * m;
+    const profit = client - cost;
+
+    rInvoice.textContent = eur.toFixed(2) + " EUR";
+    rCost.textContent = cost.toFixed(2) + " EUR";
+    rClient.textContent = client.toFixed(2) + " EUR";
+    rProfit.textContent = profit.toFixed(2) + " EUR";
+
+    rProfit.style.color = profit >= 0 ? "#19ff62" : "#ff4444";
+
+    // pelno %
+    rProfitP.textContent = ((profit / cost) * 100).toFixed(2) + "%";
+
+    // skirtingumai
+    rDiff.textContent = ((m - b) * 100).toFixed(3) + "%";
+
+    // AON vs tavo
+    rAON.textContent = (eur * 0.0007).toFixed(2) + " EUR";
+    rLeg.textContent = (eur * 0.001).toFixed(2) + " EUR";
+
+    // tik kainos
+    rAON2.textContent = (eur * 0.0007).toFixed(2) + " EUR";
+    rLeg2.textContent = (eur * 0.001).toFixed(2) + " EUR";
+
     lastClientEUR = client;
+};
 
-    const resInvoice = document.getElementById("resInvoiceEUR");
-    const resCost = document.getElementById("resCost");
-    const resClient = document.getElementById("resClient");
-    const resProfit = document.getElementById("resProfit");
+// === KLIENTO TEKSTAS ======================================
+let lastClientEUR = null;
 
-    resInvoice.textContent = eur.toFixed(2) + " EUR";
-    resCost.textContent = cost.toFixed(2) + " EUR";
-    resClient.textContent = client.toFixed(2) + " EUR";
-
-    const p = client - cost;
-    resProfit.textContent = p.toFixed(2) + " EUR";
-    resProfit.className = "value " + (p >= 0 ? "green" : "red") + " " + (p >= 0 ? "highlight-green" : "highlight-red");
-    resClient.className = "value highlight";
-    resCost.className = "value highlight";
-
-    const profitPercentEl = document.getElementById("resProfitPercent");
-    const marginDiffEl = document.getElementById("resMarginDiff");
-    const vsAONEl = document.getElementById("resVsAON");
-    const vsLegEl = document.getElementById("resVsLeg");
-
-    if (cost > 0) {
-        const pp = (p / cost) * 100;
-        profitPercentEl.textContent = pp.toFixed(2) + " %";
-    } else {
-        profitPercentEl.textContent = "–";
-    }
-
-    const marginDiff = (m - b) * 100;
-    marginDiffEl.textContent = marginDiff.toFixed(3) + " p.p.";
-
-    const aon = eur * 0.0007;
-    const leg = eur * 0.001;
-    document.getElementById("resAON").textContent = aon.toFixed(2) + " EUR";
-    document.getElementById("resLeg").textContent = leg.toFixed(2) + " EUR";
-
-    vsAONEl.textContent = (client - aon).toFixed(2) + " EUR";
-    vsLegEl.textContent = (client - leg).toFixed(2) + " EUR";
-
-    document.getElementById("clientText").value = "";
-    saveState();
-}
-
-// Pagalbinė valiutų funkcija klientui
-async function getRate(from, to) {
-    try {
-        const res = await fetch(`https://api.frankfurter.app/latest?from=${from}&to=${to}`);
-        const data = await res.json();
-        return data && data.rates ? data.rates[to] : null;
-    } catch {
-        return null;
-    }
-}
-
-// Tekstas klientui
-async function generateClientText() {
+document.getElementById("genBtn").onclick = async () => {
     if (!lastClientEUR) {
-        alert("Pirmiausia apskaičiuok kainą");
+        alert("Pirmiausia paskaičiuok!");
         return;
     }
 
-    const eur = lastClientEUR;
+    const lang = document.getElementById("lang").value;
     const showEUR = document.getElementById("showEUR").checked;
     const showExtra = document.getElementById("showExtra").checked;
     const showDate = document.getElementById("showDate").checked;
     const showInvoice = document.getElementById("showInvoice").checked;
 
-    const amt = document.getElementById("invoiceAmount").value;
-    const invCur = document.getElementById("invoiceCurrency").value;
-    const lang = document.getElementById("lang").value;
+    const amt = invoiceAmt.value;
+    const cur = invoiceCur.value;
     const extraCur = document.getElementById("extraCurrency").value;
+
+    let txt = "";
 
     const today = new Date().toISOString().split("T")[0];
 
-    let extraAmount = null;
+    // valiuta papildoma
+    let extra = "";
     if (showExtra) {
-        const rate = await getRate("EUR", extraCur);
-        if (!rate) {
-            alert("Nepavyko gauti valiutos kurso");
-            return;
-        }
-        extraAmount = eur * rate;
+        const r = await fetch(`https://api.frankfurter.app/latest?from=EUR&to=${extraCur}`);
+        const d = await r.json();
+        extra = (lastClientEUR * d.rates[extraCur]).toFixed(2);
     }
-
-    let out = "";
 
     if (lang === "LT") {
-        out += "Siunčiame preliminarią draudimo įmokos kainą pagal pateiktą invoice vertę.\n\n";
-        if (showEUR) out += `• Draudimo kaina: ${eur.toFixed(2)} EUR\n`;
-        if (showExtra && extraAmount != null) out += `• Suma ${extraCur} pagal šiandienos kursą: ${extraAmount.toFixed(2)} ${extraCur}\n`;
-        if (showInvoice && amt) out += `• Invoice vertė: ${amt} ${invCur}\n`;
-        if (showDate) out += `• Data: ${today}\n`;
-        out += "\nPastaba:\nTai orientacinė įmoka, paskaičiuota pagal invoice vertę ir šiandienos valiutos kursą.\nGalutinė kaina gali skirtis priklausomai nuo poliso išrašymo dienos.\n";
+        txt += "Siunčiame preliminarią draudimo įmokos kainą pagal pateiktą invoice vertę.\n\n";
+        if (showEUR) txt += `• Draudimo kaina: ${lastClientEUR.toFixed(2)} EUR\n`;
+        if (showExtra) txt += `• Suma ${extraCur}: ${extra} ${extraCur}\n`;
+        if (showInvoice) txt += `• Invoice vertė: ${amt} ${cur}\n`;
+        if (showDate) txt += `• Data: ${today}\n`;
     }
 
-    if (lang === "EN") {
-        out += "Please find below the preliminary insurance premium calculated based on the provided invoice value.\n\n";
-        if (showEUR) out += `• Insurance price: ${eur.toFixed(2)} EUR\n`;
-        if (showExtra && extraAmount != null) out += `• Amount in ${extraCur} at today’s rate: ${extraAmount.toFixed(2)} ${extraCur}\n`;
-        if (showInvoice && amt) out += `• Invoice value: ${amt} ${invCur}\n`;
-        if (showDate) out += `• Date: ${today}\n`;
-        out += "\nNote:\nThis is an indicative premium based on the invoice value and current exchange rate.\nThe final amount may vary depending on the policy issuance date.\n";
-    }
+    document.getElementById("clientText").value = txt;
+};
 
-    if (lang === "RU") {
-        out += "Ниже указана предварительная стоимость страховой премии, рассчитанная на основе суммы инвойса.\n\n";
-        if (showEUR) out += `• Стоимость страховки: ${eur.toFixed(2)} EUR\n`;
-        if (showExtra && extraAmount != null) out += `• Сумма в ${extraCur} по текущему курсу: ${extraAmount.toFixed(2)} ${extraCur}\n`;
-        if (showInvoice && amt) out += `• Сумма инвойса: ${amt} ${invCur}\n`;
-        if (showDate) out += `• Дата: ${today}\n`;
-        out += "\nПримечание:\nЭто ориентировочная премия, рассчитанная по сумме инвойса и текущему курсу.\nФактическая стоимость может отличаться в зависимости от даты оформления полиса.\n";
-    }
-
-    document.getElementById("clientText").value = out;
-    saveState();
-}
-
-// Copy
-function copyClientText() {
+// kopijavimas
+document.getElementById("copyBtn").onclick = () => {
     const t = document.getElementById("clientText");
     t.select();
     document.execCommand("copy");
-}
+};
 
-// PDF
-function generatePDF() {
-    const mode = document.getElementById("pdfMode").value;
-    document.body.classList.remove("pdf-calcs", "pdf-client", "pdf-both");
-    document.body.classList.add("pdf-" + mode);
-    window.print();
-}
-
-// Reset
-function resetAll() {
-    document.getElementById("invoiceCurrency").value = "USD";
-    document.getElementById("invoiceAmount").value = "";
-    document.getElementById("invoiceEUR").value = "";
-
-    document.getElementById("brokerPercent").value = "0.07";
-    document.getElementById("brokerCustom").value = "";
-    document.getElementById("brokerCustom").disabled = true;
-
-    document.getElementById("myPercent").value = "0.24";
-    document.getElementById("myCustom").value = "";
-    document.getElementById("myCustom").disabled = true;
-
-    document.getElementById("resInvoiceEUR").textContent = "–";
-    document.getElementById("resCost").textContent = "–";
-    document.getElementById("resClient").textContent = "–";
-    const p = document.getElementById("resProfit");
-    p.textContent = "–";
-    p.className = "value";
-
-    document.getElementById("resProfitPercent").textContent = "–";
-    document.getElementById("resMarginDiff").textContent = "–";
-    document.getElementById("resVsAON").textContent = "–";
-    document.getElementById("resVsLeg").textContent = "–";
-    document.getElementById("resAON").textContent = "–";
-    document.getElementById("resLeg").textContent = "–";
-
-    document.getElementById("lang").value = "LT";
-    document.getElementById("showEUR").checked = true;
-    document.getElementById("showExtra").checked = true;
-    document.getElementById("showDate").checked = true;
-    document.getElementById("showInvoice").checked = true;
-    document.getElementById("extraCurrency").value = "USD";
-    document.getElementById("clientText").value = "";
-    document.getElementById("pdfMode").value = "both";
-
-    document.getElementById("ecbToday").textContent = "Šiandienos kursas: –";
-    document.getElementById("ecbYesterday").textContent = "Vakar: –";
-    document.getElementById("ecbChange").textContent = "Pokytis: –";
-
-    lastClientEUR = null;
-    saveState();
-}
-
-// paleidžiam startu
-restoreState();
-updateECBInfo();
+// reset
+document.getElementById("resetBtn").onclick = () => location.reload();
